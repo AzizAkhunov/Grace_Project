@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <Folder Include="UseCases\Bepul_Kurs\" />
-    <Folder Include="UseCases\Ochniy_Kurs\Handlers\" />
   </ItemGroup>
 
   <ItemGroup>
