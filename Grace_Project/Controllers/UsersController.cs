@@ -1,23 +1,28 @@
 ﻿using Grace_Project.API.DTOs;
+using Grace_Project.Application.Absreaction;
 using Grace_Project.Application.UseCases.Users.Commands;
 using Grace_Project.Application.UseCases.Users.Quarries;
 using Grace_Project.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace Grace_Project.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class UsersController : ControllerBase
     {
         private readonly IMediator _mediator;
         private readonly IMemoryCache _memoryCache;
-        public UsersController(IMediator mediator, IMemoryCache memoryCache)
+        private readonly IGraceProjectDbContext _context;
+        private readonly CancellationToken cancellationToken;
+        public UsersController(IMediator mediator, IMemoryCache memoryCache, IGraceProjectDbContext context)
         {
             _mediator = mediator;
             _memoryCache = memoryCache;
+            _context = context;
         }
         [HttpPost]
         public async ValueTask<IActionResult> CreateUserAsync(UserDTO dto)
@@ -72,24 +77,45 @@ namespace Grace_Project.API.Controllers
             catch (Exception ex) { return BadRequest(ex); }
         }
         [HttpPut]
-        public async ValueTask<IActionResult> UpdateUserByIdAsync(int id, UserDTO dto)
+        public async ValueTask<IActionResult> UpdateUserByIdAsync([FromForm]UpdateUsersCommand dto)
         {
             try
             {
-                var command = new UpdateUsersCommand
-                {
-                    Name = dto.Name,
-                    PhoneNumber = dto.PhoneNumber
-                };
-                await _mediator.Send(command);
                 var value = _memoryCache.Get("Users_key");
                 if (value is not null)
                 {
                     _memoryCache.Remove("Users_key");
                 }
-                return Ok(command);
+                return Ok(await _mediator.Send(dto));
             }
             catch (Exception ex) { return Ok(ex.Message); }
+        }
+        [HttpPatch]
+        public async ValueTask<IActionResult> JoinToOnlineCourse(int id,string Name , string PhoneNumber)
+        {
+            var course = await _context.OnlaynKurs.FirstOrDefaultAsync(x => x.Id == id);
+            if (course is not null)
+            {
+                course.QushilganlarSoni += 1;
+                await _context.SaveChangesAsync(cancellationToken);
+                return Ok("Muvofaqiyatli qushildingiz!");
+            }
+            return BadRequest("Bunday kurs topilmadi!");
+        }
+        [HttpGet]
+        public async ValueTask<IActionResult> GetByIdAsync(int id)
+        {
+            try
+            {
+                var res = await _mediator.Send(new GetByIdUserCommand { Id = id });
+                var value = _memoryCache.Get("Users_key");
+                if (value is not null)
+                {
+                    _memoryCache.Remove("Users_key");
+                }
+                return Ok(res);
+            }
+            catch (Exception ex) { return BadRequest(ex); }
         }
     }
 }

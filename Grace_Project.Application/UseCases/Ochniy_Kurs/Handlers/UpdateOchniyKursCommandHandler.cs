@@ -1,30 +1,32 @@
 ﻿using Grace_Project.Application.Absreaction;
+using Grace_Project.Application.UseCases.Ochniy_Kurs.Commands;
 using Grace_Project.Application.UseCases.Onlayn_Kurs.Commands;
 using Grace_Project.Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Grace_Project.Application.UseCases.Onlayn_Kurs.Handlers
+namespace Grace_Project.Application.UseCases.Ochniy_Kurs.Handlers
 {
-    public class UpdateOnlineCourseHandler : IRequestHandler<UpdateOnlineCourseCommand, bool>
+    public class UpdateOchniyKursCommandHandler : IRequestHandler<UpdateOchniyKursCommand,bool>
     {
         private readonly IGraceProjectDbContext _context;
 
-        public UpdateOnlineCourseHandler(IGraceProjectDbContext context)
+        public UpdateOchniyKursCommandHandler(IGraceProjectDbContext context)
         {
             _context = context;
         }
 
-        public async Task<bool> Handle(UpdateOnlineCourseCommand request, CancellationToken cancellationToken)
+        public async Task<bool> Handle(UpdateOchniyKursCommand request, CancellationToken cancellationToken)
         {
-            Onlayn_kurs? kurs = await _context.OnlaynKurs.FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
+            Ochniy_kurs? kurs = await _context.OchniyKurs.FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
             if (kurs is not null)
             {
                 kurs.QushilganlarSoni = request.QushilganlarSoni;
                 kurs.Narxi = request.Narxi;
                 kurs.VideoSoni = request.VideoSoni;
 
-                _context.OnlaynKurs.Update(kurs);
+
+                _context.OchniyKurs.Update(kurs);
                 await _context.SaveChangesAsync(cancellationToken);
                 return true;
             }
