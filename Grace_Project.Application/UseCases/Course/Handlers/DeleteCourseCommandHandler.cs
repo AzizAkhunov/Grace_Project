@@ -1,22 +1,22 @@
 ﻿using Grace_Project.Application.Absreaction;
-using Grace_Project.Application.UseCases.Ochniy_Kurs.Commands;
+using Grace_Project.Application.UseCases.Course.Commands;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Grace_Project.Application.UseCases.Ochniy_Kurs.Handlers
+namespace Grace_Project.Application.UseCases.Course.Handlers
 {
-    public class DeleteOchniyKursCommandHandler : IRequestHandler<DeleteOchniyKursCommand,bool>
+    public class DeleteCourseCommandHandler : IRequestHandler<DeleteCourseCommand, bool>
     {
         private readonly IGraceProjectDbContext _context;
 
-        public DeleteOchniyKursCommandHandler(IGraceProjectDbContext context)
+        public DeleteCourseCommandHandler(IGraceProjectDbContext context)
         {
             _context = context;
         }
 
-        public async Task<bool> Handle(DeleteOchniyKursCommand request, CancellationToken cancellationToken)
+        public async Task<bool> Handle(DeleteCourseCommand request, CancellationToken cancellationToken)
         {
-            var course = await _context.OchniyKurs.FirstOrDefaultAsync(x => x.Id == request.Id);
+            var course = await _context.Courses.FirstOrDefaultAsync(x => x.Id == request.Id);
             try
             {
                 if (course is null)
@@ -25,7 +25,7 @@ namespace Grace_Project.Application.UseCases.Ochniy_Kurs.Handlers
                 }
                 else
                 {
-                    _context.OchniyKurs.Remove(course);
+                    _context.Courses.Remove(course);
                     await _context.SaveChangesAsync(cancellationToken);
                     return true;
                 }

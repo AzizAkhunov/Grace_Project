@@ -23,10 +23,6 @@ namespace Grace_Project.Application.UseCases.Users.Handlers
             {
                 user.Name = request.Name;
                 user.PhoneNumber = request.PhoneNumber;
-                user.OnlaynKurs = request.OnlaynKurs;
-                user.OchniyKurs = request.OchniyKurs;
-                user.BepulKurs = request.BepulKurs;
-
                 _context.Users.Update(user);
                 await _context.SaveChangesAsync(cancellationToken);
                 return true;

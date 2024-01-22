@@ -54,7 +54,7 @@ namespace Grace_Project.API.Controllers
                     key: "Kurs_key",
                         value: await _mediator.Send(new GetAllOnlineCourseCommand()));
                 }
-                return Ok(_memoryCache.Get("Kurs_key") as List<Onlayn_kurs>);
+                return Ok(_memoryCache.Get("Kurs_key") as List<Course>);
             }
             catch (Exception ex) { return BadRequest(ex); }
         }
@@ -63,7 +63,7 @@ namespace Grace_Project.API.Controllers
         {
             try
             {
-                var res = await _mediator.Send(new DeleteOnlineCourseCommand { Id = id });
+                var res = await _mediator.Send(new DeleteCourseCommand { Id = id });
                 var value = _memoryCache.Get("Kurs_key");
                 if (value is not null)
                 {
@@ -74,7 +74,7 @@ namespace Grace_Project.API.Controllers
             catch (Exception ex) { return BadRequest(ex); }
         }
         [HttpPut]
-        public async ValueTask<IActionResult> UpdateUserByIdAsync([FromForm] UpdateOnlineCourseCommand dto)
+        public async ValueTask<IActionResult> UpdateUserByIdAsync([FromForm] UpdateCourseCommand dto)
         {
             try
             {
