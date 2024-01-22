@@ -18,7 +18,7 @@ namespace Grace_Project.Application.UseCases.Course.Handlers
         {
             try
             {
-                var res = await _context.Courses.ToListAsync();
+                var res = await _context.Courses.Include(x => x.Users).ToListAsync();
                 return res;
             }
             catch (Exception ex) { return null; }

@@ -8,5 +8,6 @@ namespace Grace_Project.Application.UseCases.Course.Commands
         public int QushilganlarSoni { get; set; }
         public decimal Narxi { get; set; }
         public int VideoSoni { get; set; }
+        public ICollection<int> Users { get; set; }
     }
 }

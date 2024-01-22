@@ -1,5 +1,6 @@
 ﻿using Grace_Project.Application.Absreaction;
 using Grace_Project.Application.UseCases.Course.Commands;
+using Grace_Project.Domain.Entities;
 using MediatR;
 
 namespace Grace_Project.Application.UseCases.Course.Handlers
@@ -24,6 +25,11 @@ namespace Grace_Project.Application.UseCases.Course.Handlers
                     Narxi = request.Narxi,
                     VideoSoni = request.VideoSoni,
                 };
+
+                var users = _context.Users.Where(x => request.Users.Contains(x.Id)).AsEnumerable();
+
+                course.Users = users.ToArray();
+
                 await _context.Courses.AddAsync(course);
                 await _context.SaveChangesAsync(cancellationToken);
 

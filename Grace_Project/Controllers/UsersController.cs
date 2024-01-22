@@ -5,7 +5,6 @@ using Grace_Project.Application.UseCases.Users.Quarries;
 using Grace_Project.Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace Grace_Project.API.Controllers
@@ -89,18 +88,6 @@ namespace Grace_Project.API.Controllers
                 return Ok(await _mediator.Send(dto));
             }
             catch (Exception ex) { return Ok(ex.Message); }
-        }
-        [HttpPatch]
-        public async ValueTask<IActionResult> JoinToOnlineCourse(int id,string Name , string PhoneNumber)
-        {
-            var course = await _context.OnlaynKurs.FirstOrDefaultAsync(x => x.Id == id);
-            if (course is not null)
-            {
-                course.QushilganlarSoni += 1;
-                await _context.SaveChangesAsync(cancellationToken);
-                return Ok("Muvofaqiyatli qushildingiz!");
-            }
-            return BadRequest("Bunday kurs topilmadi!");
         }
         [HttpGet]
         public async ValueTask<IActionResult> GetByIdAsync(int id)
